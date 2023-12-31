@@ -16,7 +16,6 @@ func httpServer(ch chan AnsInfo) {
 		Password: "",               // 如果有密码，填写密码
 		DB:       0,                // 默认数据库
 	})
-
 	defer client.Close()
 
 	go Put(client, ch)

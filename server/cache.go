@@ -1,10 +1,10 @@
 package main
 
 import (
+	"CrownOfTokamak/persist"
 	"encoding/json"
 	"github.com/go-redis/redis"
 	"log"
-	"time"
 )
 
 func Put(client *redis.Client, ch chan AnsInfo) {
@@ -27,12 +27,16 @@ func Put(client *redis.Client, ch chan AnsInfo) {
 			}
 
 			// 存储 JSON 数据到 Redis，使用 ID 作为键
-			err = client.Set(info.Id, jsonData, time.Hour*24*30).Err()
+			err = client.Set(info.Id, jsonData, 0).Err()
 			if err != nil {
 				log.Fatal(err)
 			}
-
 			log.Printf("AnsInfo with ID %s title %s stored in Redis.\n", info.Id, info.Title)
+
+			err = persist.Store(info)
+			if err != nil {
+				log.Fatal(err)
+			}
 
 		}
 	}
