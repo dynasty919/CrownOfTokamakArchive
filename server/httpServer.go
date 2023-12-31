@@ -1,6 +1,7 @@
 package main
 
 import (
+	"CrownOfTokamak/util"
 	"encoding/json"
 	"github.com/go-redis/redis"
 	"log"
@@ -8,7 +9,7 @@ import (
 	"strings"
 )
 
-func httpServer(ch chan AnsInfo) {
+func httpServer(ch chan util.AnsInfo) {
 
 	// 创建 Redis 客户端
 	client := redis.NewClient(&redis.Options{
@@ -53,7 +54,7 @@ func httpServer(ch chan AnsInfo) {
 		}
 
 		// 解码 JSON 数据到 AnsInfo 结构体
-		var ansInfo AnsInfo
+		var ansInfo util.AnsInfo
 		if err := json.Unmarshal([]byte(jsonData), &ansInfo); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

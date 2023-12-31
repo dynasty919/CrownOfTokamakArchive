@@ -2,12 +2,13 @@ package main
 
 import (
 	"CrownOfTokamak/persist"
+	"CrownOfTokamak/util"
 	"encoding/json"
 	"github.com/go-redis/redis"
 	"log"
 )
 
-func Put(client *redis.Client, ch chan AnsInfo) {
+func Put(client *redis.Client, ch chan util.AnsInfo) {
 
 	// 确保连接正常
 	pong, err := client.Ping().Result()
@@ -33,11 +34,7 @@ func Put(client *redis.Client, ch chan AnsInfo) {
 			}
 			log.Printf("AnsInfo with ID %s title %s stored in Redis.\n", info.Id, info.Title)
 
-			err = persist.Store(info)
-			if err != nil {
-				log.Fatal(err)
-			}
-
+			persist.Store(info)
 		}
 	}
 

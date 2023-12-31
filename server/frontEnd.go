@@ -1,6 +1,7 @@
 package main
 
 import (
+	"CrownOfTokamak/util"
 	"encoding/json"
 	"github.com/go-redis/redis"
 	"html/template"
@@ -10,7 +11,7 @@ import (
 	"strings"
 )
 
-func WriteContentToResponseWrite(w http.ResponseWriter, info AnsInfo) {
+func WriteContentToResponseWrite(w http.ResponseWriter, info util.AnsInfo) {
 
 	tmpl, err := template.ParseFiles("./server/template/article.html")
 	if err != nil {
@@ -64,14 +65,14 @@ func DrawMainPage(w http.ResponseWriter, r *http.Request, client *redis.Client) 
 	}
 }
 
-func getAllAnsInfo(client *redis.Client) ([]AnsInfo, error) {
+func getAllAnsInfo(client *redis.Client) ([]util.AnsInfo, error) {
 	// 获取所有键值对
 	keys, err := client.Keys("*").Result()
 	if err != nil {
 		return nil, err
 	}
 
-	var ansInfos []AnsInfo
+	var ansInfos []util.AnsInfo
 
 	// 遍历所有键
 	for _, key := range keys {
@@ -82,7 +83,7 @@ func getAllAnsInfo(client *redis.Client) ([]AnsInfo, error) {
 		}
 
 		// 解析为 AnsInfo 结构体
-		var ansInfo AnsInfo
+		var ansInfo util.AnsInfo
 		err = json.Unmarshal([]byte(jsonData), &ansInfo)
 		if err != nil {
 			return nil, err

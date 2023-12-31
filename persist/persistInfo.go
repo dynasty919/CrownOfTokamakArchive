@@ -1,25 +1,29 @@
 package persist
 
 import (
+	"CrownOfTokamak/util"
 	"database/sql"
-	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"log"
 	"sync"
-	"time"
- 	"CrownOfTokamak/server"
 )
 
 var (
 	once sync.Once
-	chDb chan AnsInfo
+	chDb chan util.AnsInfo
 )
 
 func init() {
+	chDb = make(chan util.AnsInfo)
 	once.Do(initDb)
 }
 
 func initDb() {
-	// 数据库连接信息
+	go persistData() // 数据库连接信息
+}
+
+func persistData() {
+	log.Println("Persisting")
 	db, err := sql.Open("mysql", "root:fuckyou@tcp(127.0.0.1:3307)/tok")
 	if err != nil {
 		log.Fatal(err)
@@ -31,12 +35,12 @@ func initDb() {
 		case info := <-chDb:
 			// 插入记录
 			_, err = db.Exec("INSERT INTO tbl_file (Author, Title, Content, PostTime, Counter, Id) VALUES (?, ?, ?, ?, ?, ?)",
-				info.,
-				"标题",
-				"文章内容",
-				time.Now(),
-				42,
-				"标题的Sha1哈希",
+				info.Author,
+				info.Title,
+				info.Content,
+				info.PostTime,
+				info.Counter,
+				info.Id,
 			)
 			if err != nil {
 				log.Fatal(err)
@@ -45,12 +49,10 @@ func initDb() {
 			log.Printf("AnsInfo with ID %s title %s stored in Mysql.\n", info.Id, info.Title)
 		}
 	}
-
-
 }
 
-func Store(jsonData []byte) error {
- 	go func() {
- 		chDb <- jsonData
+func Store(jsonData util.AnsInfo) {
+	go func() {
+		chDb <- jsonData
 	}()
 }

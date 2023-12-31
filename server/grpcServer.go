@@ -1,6 +1,7 @@
 package main
 
 import (
+	"CrownOfTokamak/util"
 	"context"
 	"log"
 	"net"
@@ -12,24 +13,22 @@ import (
 
 type server struct {
 	pb.UnimplementedAnsServiceServer
-	InfoChan chan AnsInfo
+	InfoChan chan util.AnsInfo
 }
 
 var cnt = 1
 
 func (s *server) ProcessAnsList(ctx context.Context, ansList *pb.AnsList) (*pb.Ans, error) {
-	log.Printf("Received AnsList: %v", ansList)
-
 	// 在这里处理接收到的 AnsList 数据，
 	for _, ans := range ansList.Arr {
-		var newAns AnsInfo
+		var newAns util.AnsInfo
 		newAns.Author = ans.Author
 		newAns.Title = ans.Title
 		newAns.Content = ans.Content
 		newAns.PostTime = time.Now()
 		newAns.Counter = cnt
 		cnt++
-		newAns.Id = ContentSha1(ans.Content)
+		newAns.Id = util.ContentSha1(ans.Content)
 
 		log.Printf("ans received %v", newAns.Title)
 		s.InfoChan <- newAns
@@ -52,7 +51,7 @@ func GrpcServer() {
 		log.Printf("server listening tcp:1111")
 	}
 
-	ch := make(chan AnsInfo)
+	ch := make(chan util.AnsInfo)
 	s := &server{
 		InfoChan: ch,
 	}
