@@ -23,12 +23,14 @@ func initDb() {
 }
 
 func persistData() {
-	log.Println("Persisting")
-	db, err := sql.Open("mysql", "root:fuckyou@tcp(127.0.0.1:3307)/tok")
+
+	db, err := sql.Open("mysql", "root:fuckyou@tcp(tok-persistor:3306)/tok")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
+
+	log.Println("Persisting")
 
 	for {
 		select {

@@ -1,3 +1,4 @@
+from datetime import datetime
 import requests
 import re
 
@@ -17,6 +18,10 @@ def get_content(url, data=None):
         'http': '192.168.56.1:7890',
         'https': '192.168.56.1:7890',
     }
+
+    # 获取当前时间
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"try to crawl {url}, at{current_time}")
 
     req = requests.get(url, headers=headers)
     req.encoding = 'utf-8'

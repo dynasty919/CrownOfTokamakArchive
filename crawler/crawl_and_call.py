@@ -17,8 +17,9 @@ def run():
         # 生成一个50到70之间的随机数，单位是秒
         sleep_time = random.uniform(50, 70)
 
-        # 调用函数a
+        # 调用函数crawl_main_page
         urls = id_page_crawler.crawl_main_page(url)
+        print("crawled urls:", urls)
 
         new_urls = filter_urls(urls)
 
@@ -34,8 +35,8 @@ def run():
 
 def filter_urls(input_urls):
     # 创建 Redis 连接
-    redis_host = '127.0.0.1'  # Redis 服务器的主机名或 IP 地址
-    redis_port = 6389  # 你在 docker run 中映射的主机端口
+    redis_host = 'my-redis'  # Redis 服务器的主机名或 IP 地址
+    redis_port = 6379  # 你在 docker run 中映射的主机端口
     redis_client = redis.Redis(host=redis_host, port=redis_port, decode_responses=True)
 
     # 存储 URL 的键前缀
@@ -126,7 +127,7 @@ def wash_ans(ans):
 
 
 def call_grpc_server(data):
-    with grpc.insecure_channel('127.0.0.1:1111') as channel:
+    with grpc.insecure_channel('tok_container:1111') as channel:
         # 创建 gRPC 客户端
         stub = ansChan_pb2_grpc.AnsServiceStub(channel)
 

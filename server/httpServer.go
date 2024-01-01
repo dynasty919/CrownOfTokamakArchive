@@ -13,9 +13,9 @@ func httpServer(ch chan util.AnsInfo) {
 
 	// 创建 Redis 客户端
 	client := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6390", // 这里使用新的 Redis 容器的地址和端口
-		Password: "",               // 如果有密码，填写密码
-		DB:       0,                // 默认数据库
+		Addr:     "go-server-redis:6379", // 这里使用新的 Redis 容器的地址和端口
+		Password: "",                     // 如果有密码，填写密码
+		DB:       0,                      // 默认数据库
 	})
 	defer client.Close()
 
