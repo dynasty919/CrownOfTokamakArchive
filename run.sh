@@ -9,6 +9,9 @@ docker run -d --name go-server-redis --network my-network redis
 # 启动 Redis 2
 docker run -d --name my-redis --network my-network redis
 
+# 等5秒
+sleep 5
+
 # 启动 MySQL
 docker run -d --name tok-persistor -e MYSQL_ROOT_PASSWORD=fuckyou --network my-network -p 3307:3306 mysql
 
